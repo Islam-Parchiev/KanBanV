@@ -3,12 +3,13 @@ import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@
 import {SortableContext, arrayMove} from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
 
-import { Column, Id } from '../types';
+import { Column, Id, Task } from '../types';
 
 import PlusIcon from './PlusIcon'
 import ColumnContainer from './ColumnContainer';
 const KanbanBoard = () => {
 	const [columns,setColumns] = useState<Column[]>([]);
+	const [tasks,setTasks]= useState<Task[]>([])
 	const [activeColumn,setActiveColumn]= useState<Column | null>(null)
 	const sensors = useSensors(
 		useSensor(PointerSensor,{
@@ -57,6 +58,14 @@ const KanbanBoard = () => {
     	 const filteredColumns = columns.filter((col)=> col.id !== id)
 		 setColumns(filteredColumns);
 	}
+	const updateColumn = (id:Id,title:string) => {
+    	 // eslint-disable-next-line array-callback-return
+    	 const newColumns = columns.map((col:any) => {
+			if(col.id !==id) return col
+			return {...col,title}
+		 });
+	 setColumns(newColumns)
+	}
 	return (
 		<div
 			className="
@@ -78,6 +87,7 @@ const KanbanBoard = () => {
 								<ColumnContainer
 									column={column}
 									deleteColumn={deleteColumn}
+									updateColumn={updateColumn}
 									key={column.id}
 								/>
 							))}
@@ -109,7 +119,8 @@ const KanbanBoard = () => {
                 	{activeColumn && 
 					<ColumnContainer 
 						column={activeColumn} 
-						deleteColumn={deleteColumn}/>}
+						deleteColumn={deleteColumn}
+						updateColumn={updateColumn}/>}
 					</DragOverlay>,
 					document.body,
 				)}
