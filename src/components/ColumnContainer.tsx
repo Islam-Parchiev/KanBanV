@@ -1,3 +1,6 @@
+import { useSortable } from '@dnd-kit/sortable';
+import {CSS} from '@dnd-kit/utilities'
+
 import { Column, Id } from '../types';
 
 import DeleteIcon from './DeleteIcon';
@@ -9,8 +12,48 @@ interface Props {
 const ColumnContainer = (props:Props) => {
 	const {column,deleteColumn} = props;
 
+	const {setNodeRef,
+		attributes,
+		listeners,
+		transform,
+		transition,
+		isDragging} = useSortable({
+		id:column.id,
+		data: {
+			type:'Column',
+			column,
+		},
+	})
+
+	const style ={
+		transition,
+		transform:CSS.Transform.toString(transform),
+	}
+	
+	if(isDragging) {
+		return (
+			<div
+				ref={setNodeRef}
+				style={style}
+				className="
+			bg-columnBackgroundColor
+			opacity-40
+			border-2
+			border-rose-500
+			w-[350px]
+			h-[500px]
+			max-h-[500px]
+			rounded-md
+			flex
+			flex-col
+			"></div>
+		)
+	}
 	return (
-		<div className="
+		<div
+		    style={style}
+			ref={setNodeRef} 
+			className="
 		bg-columnBackgroundColor
 		w-[350px]
 		h-[500px]
@@ -18,7 +61,10 @@ const ColumnContainer = (props:Props) => {
 		rounded-md
 		flex
 		flex-col">
-			<div className="
+			<div
+				{...attributes}
+		    {...listeners}
+			 className="
 			bg-mainBackgroundColor
 			text-md
 			h-[60px]
@@ -45,7 +91,7 @@ const ColumnContainer = (props:Props) => {
 					{column.title}
 				</div>
 				<button
-				onClick={()=> deleteColumn(column.id)} className="
+					onClick={()=> deleteColumn(column.id)} className="
 				stroke-gray-500 "><DeleteIcon/></button>
 			</div>
 			<div className="flex flex-grow"></div>
