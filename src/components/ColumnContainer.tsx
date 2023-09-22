@@ -6,6 +6,7 @@ import { Column, Id, Task } from '../types';
 
 import DeleteIcon from './DeleteIcon';
 import PlusIcon from './PlusIcon';
+import TaskCard from './TaskCard';
 
 interface Props {
 		column:Column;
@@ -13,9 +14,11 @@ interface Props {
 		updateColumn:(id:Id,title:string)=> void;
 		createTask:(columnId:Id)=>void;
 		tasks:Task[];
+		deleteTask:(id:Id)=> void;
+		updateTask:(id:Id,content:string)=>void;
 }
 const ColumnContainer = (props:Props) => {
-	const {column,deleteColumn,updateColumn,createTask,tasks} = props;
+	const {column,deleteColumn,updateColumn,createTask,tasks,deleteTask,updateTask} = props;
 
 	const [editMode,setEditMode] = useState(false);
 
@@ -116,11 +119,16 @@ const ColumnContainer = (props:Props) => {
 					onClick={()=> deleteColumn(column.id)} className="
 				stroke-gray-500 "><DeleteIcon/></button>
 			</div>
-			<div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto">{
-				tasks.map(task=> (
-					<div>{task.content}</div>
-				))
-			}</div>
+			<div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto">
+				{
+					tasks.map(task=> (
+						<TaskCard 
+							key={task.id} 
+							task={task} 
+							deleteTask={deleteTask}
+							updateTask={updateTask}/>
+					))
+				}</div>
 			<button
 				className="flex 
 					gap-2 
@@ -129,9 +137,9 @@ const ColumnContainer = (props:Props) => {
 					border-2 rounded-md p-4
 					border-x-columnBackgroundColor hover:bg-mainBackgroundColor 
 					hover:text-rose-500 active:bg-black"
-						onClick={()=> {
-						createTask(column.id)
-					}}
+				onClick={()=> {
+					createTask(column.id)
+				}}
 			><PlusIcon/>
 				Add task</button>
 		</div>
