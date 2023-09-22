@@ -66,6 +66,14 @@ const KanbanBoard = () => {
 		 });
 	 setColumns(newColumns)
 	}
+	const createTask = (columnId:Id)=> {
+     	const newTask:Task ={
+			id:generateId(),
+			columnsId:columnId,
+			content:`Task ${tasks.length + 1}`,
+	 }
+	 setTasks([...tasks,newTask])
+	}
 	return (
 		<div
 			className="
@@ -88,7 +96,9 @@ const KanbanBoard = () => {
 									column={column}
 									deleteColumn={deleteColumn}
 									updateColumn={updateColumn}
+									createTask={createTask}
 									key={column.id}
+									tasks={tasks.filter((task)=> task.columnsId === column.id)}
 								/>
 							))}
 						</SortableContext>
@@ -120,7 +130,9 @@ const KanbanBoard = () => {
 					<ColumnContainer 
 						column={activeColumn} 
 						deleteColumn={deleteColumn}
-						updateColumn={updateColumn}/>}
+						updateColumn={updateColumn}
+						createTask={createTask}
+						tasks={tasks}/>}
 					</DragOverlay>,
 					document.body,
 				)}
